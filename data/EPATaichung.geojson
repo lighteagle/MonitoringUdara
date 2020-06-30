@@ -1,0 +1,12 @@
+{
+"type": "FeatureCollection",
+"name": "EPATaichung",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:EPSG::32651" } },
+"features": [
+{ "type": "Feature", "properties": { "Field1": 260311.04, "Field2": 2667836.0, "Stations": "Zhongming" }, "geometry": { "type": "Point", "coordinates": [ 260311.04, 2673074.81 ] } },
+{ "type": "Feature", "properties": { "Field1": 257870.36, "Field2": 2674246.44, "Stations": "Xitun" }, "geometry": { "type": "Point", "coordinates": [ 257870.36, 2674246.44 ] } },
+{ "type": "Feature", "properties": { "Field1": 263935.14, "Field2": 2667207.0, "Stations": "Dali" }, "geometry": { "type": "Point", "coordinates": [ 263935.14, 2667207.0 ] } },
+{ "type": "Feature", "properties": { "Field1": 2639420.0, "Field2": 2667836.0, "Stations": "Shalu" }, "geometry": { "type": "Point", "coordinates": [ 263942.0, 2667836.0 ] } },
+{ "type": "Feature", "properties": { "Field1": 270724.02, "Field2": 2684493.13, "Stations": "Fengyuan" }, "geometry": { "type": "Point", "coordinates": [ 270724.02, 2684493.13 ] } }
+]
+}
