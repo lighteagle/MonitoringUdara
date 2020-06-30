@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+    integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+    crossorigin="" />
+
+  <!-- Make sure you put this AFTER Leaflet's CSS -->
+  <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+    integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+    crossorigin=""></script>
+
+  <style>
+    #mapid {
+      height: 100vh;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="mapid"></div>
+
+
+  <script>
+    // bgMap
+    var mymap = L.map('mapid').setView([25, 121], 7);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(mymap);
+
+    let lat = 0
+    let long = 0
+
+    const api_url =
+      'https://sta.ci.taiwan.gov.tw/STA_AirQuality_v2/v1.0/Things?$expand=Locations&$select=name,properties&$count=true&$filter=properties/authority%20eq%20%27%E8%A1%8C%E6%94%BF%E9%99%A2%E7%92%B0%E5%A2%83%E4%BF%9D%E8%AD%B7%E7%BD%B2%27%20and%20substringof(%27%E7%A9%BA%E6%B0%A3%E5%93%81%E8%B3%AA%E6%B8%AC%E7%AB%99%27,name)'
+
+    async function getStation() {
+      const response = await fetch(api_url)
+      const data = await response.json()
+      console.log(data.value);
+      for (item of data.value) {
+        console.log(item);
+        long = item.Locations[0].location.coordinates[0]
+        lat = item.Locations[0].location.coordinates[1]
+
+        const marker = L.marker([lat, long]).addTo(mymap)
+        const txt = `
+        Latitude : ${lat} <br>
+        Longitude :  ${long} <br>
+        Area Name : ${item.properties.areaName}<br>
+        Authority : ${item.properties.authority}<br>
+        City : ${item.properties.city}<br>
+        English Name : ${item.properties.englishName}<br>
+        Station ID : ${item.properties.stationID}<br>
+        Station Type : ${item.properties.stationType}<br>
+        Township : ${item.properties.township}<br>
+        `
+        marker.bindPopup(txt)
+      }
+    }
+
+    getStation()
+  </script>
+</body>
+
+</html>
