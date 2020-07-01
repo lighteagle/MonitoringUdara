@@ -21,6 +21,10 @@ legend.addTo(mymap);
 let lat = 0
 let long = 0
 let pm25 = 0
+let setPM25 = []
+let staName = ""
+let obsTime = ""
+let dataChart = []
 
 const api_url_station =
     'https://sta.ci.taiwan.gov.tw/STA_AirQuality_v2/v1.0/Things?$expand=Locations&$select=name,properties&$count=true&$filter=properties/authority%20eq%20%27%E8%A1%8C%E6%94%BF%E9%99%A2%E7%92%B0%E5%A2%83%E4%BF%9D%E8%AD%B7%E7%BD%B2%27%20and%20substringof(%27%E7%A9%BA%E6%B0%A3%E5%93%81%E8%B3%AA%E6%B8%AC%E7%AB%99%27,name)'
@@ -30,14 +34,29 @@ const api_url_pm25 =
 
 
 async function getStation() {
+    setPM25 = []
+    dataChart = []
     const response = await fetch(api_url_pm25)
     const data = await response.json()
+
     for (item of data.value) {
+
+
         const response = await fetch(item.Thing["@iot.selfLink"] + "/Locations")
         const data = await response.json()
         long = data.value[0].location.coordinates[0]
         lat = data.value[0].location.coordinates[1]
         pm25 = item.Observations[0].result
+        obsTime = item.Observations[0].phenomenonTime
+        staName = item.Thing.properties.englishName
+        setPM25 = [...setPM25, {
+            staName,
+            pm25,
+            obsTime
+        }]
+        dataChart = [...dataChart, [staName, pm25]]
+        // console.log(item.Observations[0].phenomenonTime)
+        console.log(dataChart)
 
         var lightgreenMarker = L.ExtraMarkers.icon({
             icon: 'fa-number',
@@ -64,6 +83,58 @@ async function getStation() {
         // `
         //     marker.bindPopup(txt)
     }
+    dataChart.sort((function (index) {
+        return function (a, b) {
+            return (a[index] === b[index] ? 0 : (a[index] < b[index] ? -1 : 1));
+        };
+    })(1))
+    // H-Chart
+    Highcharts.chart('h-chart', {
+        chart: {
+            type: 'bar'
+        },
+        title: {
+            text: 'PM 2.5 - EPA station'
+        },
+        subtitle: {
+            text: 'Source: <a href="https://ci.taiwan.gov.tw/dsp/en/environmental_air_epa_en.aspx">ci.taiwan.gov.tw</a>'
+        },
+        xAxis: {
+            type: 'category',
+            labels: {
+                // rotation: -90,
+                style: {
+                    fontSize: '12px',
+                    fontFamily: 'Verdana, sans-serif'
+                }
+            }
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'PM 2.5'
+            }
+        },
+        legend: {
+            enabled: false
+        },
+        series: [{
+            name: 'PM2.5',
+            data: dataChart,
+            // dataLabels: {
+            //     enabled: true,
+            //     rotation: -90,
+            //     color: '#FFFFFF',
+            //     align: 'right',
+            //     format: '{point.y:.1f}', // one decimal
+            //     y: 10, // 10 pixels down from the top
+            //     style: {
+            //         fontSize: '13px',
+            //         fontFamily: 'Verdana, sans-serif'
+            //     }
+            // }
+        }]
+    })
 }
 
 getStation()
