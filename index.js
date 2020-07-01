@@ -137,8 +137,8 @@ async function getStation() {
     let staLayer = L.layerGroup(staLayer_)
     let heatLayer = L.layerGroup(heatLayer_)
     var Layers = {
-        'Heatmap': staLayer,
-        'Station': heatLayer
+        'Station': staLayer,
+        'Heatmap': heatLayer
 
     };
     var layerControl = L.control.layers(Layers);
