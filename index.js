@@ -25,6 +25,7 @@ let setPM25 = []
 let staName = ""
 let obsTime = ""
 let dataChart = []
+let dataHeat = []
 
 const api_url_station =
     'https://sta.ci.taiwan.gov.tw/STA_AirQuality_v2/v1.0/Things?$expand=Locations&$select=name,properties&$count=true&$filter=properties/authority%20eq%20%27%E8%A1%8C%E6%94%BF%E9%99%A2%E7%92%B0%E5%A2%83%E4%BF%9D%E8%AD%B7%E7%BD%B2%27%20and%20substringof(%27%E7%A9%BA%E6%B0%A3%E5%93%81%E8%B3%AA%E6%B8%AC%E7%AB%99%27,name)'
@@ -36,6 +37,7 @@ const api_url_pm25 =
 async function getStation() {
     setPM25 = []
     dataChart = []
+    dataHeat = []
     const response = await fetch(api_url_pm25)
     const data = await response.json()
 
@@ -49,11 +51,13 @@ async function getStation() {
         pm25 = item.Observations[0].result
         obsTime = item.Observations[0].phenomenonTime
         staName = item.Thing.properties.englishName
+
         setPM25 = [...setPM25, {
             staName,
             pm25,
             obsTime
         }]
+        dataHeat = [...dataHeat, [lat, long, pm25]]
         dataChart = [...dataChart, [staName, pm25]]
         // console.log(item.Observations[0].phenomenonTime)
         console.log(dataChart)
@@ -67,6 +71,15 @@ async function getStation() {
             tooltipAnchor: [15, -25]
         });
 
+        var geojsonMarkerOptions = {
+            radius: pm25 * 5,
+            fillColor: "green",
+            color: "none",
+            weight: 0.7,
+            opacity: pm25 / 200,
+            fillOpacity: pm25 / 200
+        };
+        const markerCircle = L.circleMarker([lat, long], geojsonMarkerOptions).addTo(mymap)
         const marker = L.marker([lat, long], {
             icon: lightgreenMarker
         }).addTo(mymap)
@@ -88,6 +101,17 @@ async function getStation() {
             return (a[index] === b[index] ? 0 : (a[index] < b[index] ? -1 : 1));
         };
     })(1))
+    // lat, lng, intensity
+    // const grad = {
+    //     0.4: 'purple',
+    //     0.65: 'red',
+    //     1: 'green'
+    // }
+    // let heat = L.heatLayer(dataHeat, {
+    //     radius: 100,
+    //     gradient: grad
+    // }).addTo(mymap);
+
     // H-Chart
     Highcharts.chart('h-chart', {
         chart: {
