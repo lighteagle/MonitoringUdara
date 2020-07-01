@@ -1,12 +1,39 @@
 // bgMap
 var mymap = L.map('mapid').setView([25, 121], 7);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-}).addTo(mymap);
+// L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+//     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+// }).addTo(mymap);
+/* Tile Basemap */
+var _attribution = '<a href="https://itsmejelita" target="_blank">jelita@2020</a>';
+var basemaps = [
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'ESRI | ' + _attribution
+    }),
+    L.tileLayer('https://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
+        maxZoom: 20,
+        subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+        attribution: 'Google | ' + _attribution
+    }),
+    L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+        maxZoom: 20,
+        subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+        attribution: 'Google | ' + _attribution
+    }),
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: 'OSM | ' + _attribution
+    }),
+];
 
 
-
-
+// Control Basemaps
+mymap.addControl(
+    L.control.basemaps({
+        basemaps: basemaps,
+        tileX: 0,
+        tileY: 0,
+        tileZ: 1
+    })
+);
 
 /* Legenda */
 var legend = new L.Control({
