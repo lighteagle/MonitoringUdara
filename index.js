@@ -4,6 +4,10 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(mymap);
 
+
+
+
+
 /* Legenda */
 var legend = new L.Control({
     position: 'bottomleft'
@@ -26,6 +30,9 @@ let staName = ""
 let obsTime = ""
 let dataChart = []
 let dataHeat = []
+let staLayer_ = []
+let heatLayer_ = []
+
 
 const api_url_station =
     'https://sta.ci.taiwan.gov.tw/STA_AirQuality_v2/v1.0/Things?$expand=Locations&$select=name,properties&$count=true&$filter=properties/authority%20eq%20%27%E8%A1%8C%E6%94%BF%E9%99%A2%E7%92%B0%E5%A2%83%E4%BF%9D%E8%AD%B7%E7%BD%B2%27%20and%20substringof(%27%E7%A9%BA%E6%B0%A3%E5%93%81%E8%B3%AA%E6%B8%AC%E7%AB%99%27,name)'
@@ -83,6 +90,9 @@ async function getStation() {
         const marker = L.marker([lat, long], {
             icon: lightgreenMarker
         }).addTo(mymap)
+        staLayer_ = [...staLayer_, marker]
+        heatLayer_ = [...heatLayer_, markerCircle]
+
         //     const txt = `
         // Latitude : ${lat} <br>
         // Longitude :  ${long} <br>
@@ -95,7 +105,18 @@ async function getStation() {
         // Township : ${item.properties.township}<br>
         // `
         //     marker.bindPopup(txt)
+
     }
+    let staLayer = L.layerGroup(staLayer_)
+    let heatLayer = L.layerGroup(heatLayer_)
+    var Layers = {
+        'Heatmap': staLayer,
+        'Station': heatLayer
+
+    };
+    var layerControl = L.control.layers(Layers);
+    layerControl.addTo(mymap)
+
     dataChart.sort((function (index) {
         return function (a, b) {
             return (a[index] === b[index] ? 0 : (a[index] < b[index] ? -1 : 1));
