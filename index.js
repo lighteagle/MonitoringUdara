@@ -120,18 +120,18 @@ async function getStation() {
         staLayer_ = [...staLayer_, marker]
         heatLayer_ = [...heatLayer_, markerCircle]
 
-        //     const txt = `
-        // Latitude : ${lat} <br>
-        // Longitude :  ${long} <br>
-        // Area Name : ${item.properties.areaName}<br>
-        // Authority : ${item.properties.authority}<br>
-        // City : ${item.properties.city}<br>
-        // English Name : ${item.properties.englishName}<br>
-        // Station ID : ${item.properties.stationID}<br>
-        // Station Type : ${item.properties.stationType}<br>
-        // Township : ${item.properties.township}<br>
-        // `
-        //     marker.bindPopup(txt)
+        const txt = `
+        Latitude : ${lat} <br>
+        Longitude :  ${long} <br>
+        Area Name : ${item.Thing.properties.areaName}<br>
+        Authority : ${item.Thing.properties.authority}<br>
+        City : ${item.Thing.properties.city}<br>
+        English Name : ${item.Thing.properties.englishName}<br>
+        Station ID : ${item.Thing.properties.stationID}<br>
+        Station Type : ${item.Thing.properties.stationType}<br>
+        Township : ${item.Thing.properties.township}<br>
+        `
+        marker.bindPopup(txt)
 
     }
     let staLayer = L.layerGroup(staLayer_)
